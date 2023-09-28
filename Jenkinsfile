@@ -25,10 +25,13 @@ pipeline {
     }
    stage('Deploy Image') {
       steps{
-        sh '''
-        docker tag testapp  127.0.0.1:8083/repository/docker/mguazzardo/testapp
-        docker push  127.0.0.1:8083/repository/docker/mguazzardo/testapp   
-        '''
+        withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
+          sh "docker login -u username -p ${dockerpwd}"
+          sh '''
+            docker tag testapp  127.0.0.1:8083/repository/docker/mguazzardo/testapp
+            docker push  127.0.0.1:8083/repository/docker/mguazzardo/testapp   
+          '''
+          }
         }
       }
     }
